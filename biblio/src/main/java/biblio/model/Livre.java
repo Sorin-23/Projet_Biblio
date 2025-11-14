@@ -48,6 +48,8 @@ public class Livre {
 	@JsonView(Views.Livre.class)
 	@JoinColumn(name="collection")
     private Collection collection;
+    
+    public Livre() {}
 
 
     public Livre(Integer id, String titre, String resume, int annee, Auteur auteur, Editeur editeur,
@@ -70,9 +72,6 @@ public class Livre {
 		this.editeur = editeur;
 		this.collection = collection;
 	}
-
-
-	public Livre() {}
     
     
     public Integer getId() {
