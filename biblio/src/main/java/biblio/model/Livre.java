@@ -32,15 +32,21 @@ public class Livre {
     private int annee;
 
     @Column
-    @JsonView(Views.Common.class)
+    @ManyToOne
+	@JsonView(Views.Livre.class)
+	@JoinColumn(name="auteur")
     private Auteur auteur;
     
     @Column
-    @JsonView(Views.Common.class)
+    @ManyToOne
+	@JsonView(Views.Livre.class)
+	@JoinColumn(name="editeur")
     private Editeur editeur;
 
     @Column
-    @JsonView(Views.Common.class)
+    @ManyToOne
+	@JsonView(Views.Livre.class)
+	@JoinColumn(name="collection")
     private Collection collection;
 
     public Livre(Integer id, String titre, String resume, int annee, Editeur editeur, Collection collection) {
