@@ -1,7 +1,7 @@
 package biblio.model;
 import com.fasterxml.jackson.annotation.JsonView;
-import biblio.model.Editeur;
 
+import biblio.view.Views;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
