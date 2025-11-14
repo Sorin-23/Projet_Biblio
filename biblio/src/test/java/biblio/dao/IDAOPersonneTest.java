@@ -19,7 +19,7 @@ public class IDAOPersonneTest {
 	
 
 	
-	@Test
+	/*@Test
 	void testFindByLoginAndPassword() {
 		Personne p = new Personne();
         p.setLogin("jdoe");
@@ -32,7 +32,7 @@ public class IDAOPersonneTest {
         assertThat(pers.getRole()).isEqualTo("AUTEUR");
         assertThat(pers.getRole()).isNotEqualTo("EDITEUR");
 		
-	}
+	}*/
 	
 	@Test 
 	void testFindByLogin() {

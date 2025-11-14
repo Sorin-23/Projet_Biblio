@@ -41,13 +41,7 @@ public class JwtHeaderFilter extends OncePerRequestFilter {
 				// On refabrique une liste de rôles pour l'utilisateur
 				List<GrantedAuthority> autorities = new ArrayList<>();
 
-				switch(personne.getRole()) {
-				case "ADMIN" -> autorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-				case "AUTEUR" -> autorities.add(new SimpleGrantedAuthority("ROLE_AUTEUR"));
-				case "EDITEUR" -> autorities.add(new SimpleGrantedAuthority("ROLE_EDITEUR"));
-				default -> autorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-				}
-
+				autorities.add(new SimpleGrantedAuthority("ROLE_"+personne.getRole()));
 			
 
 			// Créer, pour Spring Security, un nouvel User, avec le nom d'utilisateur, pas de mdp, et la liste des autorités

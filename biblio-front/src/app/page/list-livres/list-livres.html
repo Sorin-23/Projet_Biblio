@@ -1,0 +1,18 @@
+<p>list-livres works!</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>Titre</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr *ngFor="let livre of livres$ | async; trackBy: trackLivre">
+            <td>
+                <a [routerLink]="[ '/livre', livre.id ]">{{ livre.titre }}</a>
+            </td>
+        </tr>
+    </tbody>
+</table>

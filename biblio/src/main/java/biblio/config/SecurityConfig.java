@@ -35,7 +35,7 @@ public class SecurityConfig {
         });
 
         // Activer le formulaire de connexion
-        http.formLogin(form -> {
+        /*http.formLogin(form -> {
             form.loginPage("/login"); // Page de login, GetMapping à gérer nous-même
             form.loginProcessingUrl("/process_login"); // URL de process du login par Spring Security, PostMapping créé et géré par Spring Security
             form.defaultSuccessUrl("/home", true); // Redirection vers /home après login OK
@@ -48,7 +48,7 @@ public class SecurityConfig {
                 .logoutRequestMatcher(request -> "GET".equals(request.getMethod()) && request.getRequestURI().equals("/logout")); // Cette ligne est pour autoriser le GET sur /logout, car par défaut c'est du POST que Spring Security crée
 
             logout.logoutSuccessUrl("/login"); // Redirection vers /login après logout OK
-        });
+        });*/
 
         // Désactiver la protection CSRF
         http.csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"));
