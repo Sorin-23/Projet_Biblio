@@ -49,16 +49,32 @@ public class Livre {
 	@JoinColumn(name="collection")
     private Collection collection;
 
-    public Livre(Integer id, String titre, String resume, int annee, Editeur editeur, Collection collection, Auteur auteur) {
-        this.id = id;
-        this.titre = titre;
-        this.resume = resume;
-        this.annee = annee;
-        this.auteur = auteur;
-        this.editeur = editeur;
-        this.collection = collection;
-    }
 
+    public Livre(Integer id, String titre, String resume, int annee, Auteur auteur, Editeur editeur,
+			Collection collection) {
+		this.id = id;
+		this.titre = titre;
+		this.resume = resume;
+		this.annee = annee;
+		this.auteur = auteur;
+		this.editeur = editeur;
+		this.collection = collection;
+	}
+    
+
+    public Livre(String titre, String resume, int annee, Auteur auteur, Editeur editeur, Collection collection) {
+		this.titre = titre;
+		this.resume = resume;
+		this.annee = annee;
+		this.auteur = auteur;
+		this.editeur = editeur;
+		this.collection = collection;
+	}
+
+
+	public Livre() {}
+    
+    
     public Integer getId() {
         return id;
     }
@@ -119,15 +135,10 @@ public class Livre {
 		this.auteur = auteur;
 	}
 
-	public Livre(String titre, String resume, int annee, Editeur editeur, Collection collection) {
-        this.titre = titre;
-        this.resume = resume;
-        this.annee = annee;
-        this.editeur = editeur;
-        this.collection = collection;
-    }
+	
 
-    @Override
+
+	@Override
     public String toString() {
         return "Livre [id=" + id + ", titre=" + titre + ", resume=" + resume + ", annee=" + annee + ", editeur="
                 + editeur + ", collection=" + collection + "]";

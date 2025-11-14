@@ -40,6 +40,9 @@ public class Collection {
 		this.id = id;
 		this.nom = nom;
 	}
+	public Collection(String nom) {
+		this.nom = nom;
+	}
 
 	public Integer getId() {
 		return id;
