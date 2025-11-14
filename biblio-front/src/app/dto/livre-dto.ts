@@ -3,7 +3,7 @@ import { EditeurDto } from "./editeur-dto";
 import { AuteurDto } from "./auteur-dto";
 
 export class LivreDto {
-    constructor(private _id: number, private _titre: string,
+    constructor(private _id: number, private _titre: string, private _resume:string,
         private _annee:number, private _auteur : AuteurDto, 
         private _editeur: EditeurDto, private _collection: CollectionDto){}
 
@@ -21,6 +21,14 @@ export class LivreDto {
 
     public set titre(value: string) {
         this._titre = value;
+    }
+
+    public get resume(): string {
+        return this._resume;
+    }
+
+    public set resume(value: string) {
+        this._resume = value;
     }
 
     public get annee(): number {
@@ -58,7 +66,12 @@ export class LivreDto {
 
     public toJson(): any {
         return {
-            libelle: this.libelle
+            titre: this.titre,
+            resume:this.resume,
+            annee: this.annee,
+            auteur:this.auteur.toJson,
+            editeur:this.editeur.toJson,
+            collection:this.collection.toJson
         };
     }
     
