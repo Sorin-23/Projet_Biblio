@@ -1,0 +1,22 @@
+<form [formGroup]="auteurForm" (ngSubmit)="saveAuteur()">
+  <input formControlName="nom" placeholder="Nom" />
+  <input formControlName="prenom" placeholder="Prénom" />
+  <input formControlName="nationalite" placeholder="Nationalité" />
+
+  <button type="submit">
+    {{ editingAuteur ? 'Mettre à jour' : 'Créer' }}
+  </button>
+  <button type="button" *ngIf="editingAuteur" (click)="cancelEdit()">Annuler</button>
+</form>
+
+<table>
+  <tr *ngFor="let a of (auteurs$ | async)">
+    <td>{{ a.nom }}</td>
+    <td>{{ a.prenom }}</td>
+    <td>{{ a.nationalite }}</td>
+    <td>
+      <button (click)="editAuteur(a)">Modifier</button>
+      <button (click)="deleteAuteur(a)">Supprimer</button>
+    </td>
+  </tr>
+</table>

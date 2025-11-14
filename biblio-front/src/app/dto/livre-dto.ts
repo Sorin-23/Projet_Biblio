@@ -69,9 +69,9 @@ export class LivreDto {
             titre: this.titre,
             resume:this.resume,
             annee: this.annee,
-            auteur:this.auteur.toJson,
-            editeur:this.editeur.toJson,
-            collection:this.collection.toJson
+            auteur:this.auteur.toJson(),
+            editeur:this.editeur.toJson(),
+            collection:this.collection.toJson()
         };
     }
     

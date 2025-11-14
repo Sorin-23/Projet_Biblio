@@ -44,7 +44,5 @@ export class LivreService {
   public deleteById(id: number): void {
     this.http.delete<void>(`${ this.apiUrl }/${ id }`).subscribe(() => this.refresh());
   }
-
-
   
 }
