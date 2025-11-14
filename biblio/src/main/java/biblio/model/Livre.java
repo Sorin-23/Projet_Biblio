@@ -33,29 +33,28 @@ public class Livre {
     @JsonView(Views.Common.class)
     private int annee;
 
-    @Column
     @ManyToOne
 	@JsonView(Views.Livre.class)
 	@JoinColumn(name="auteur")
     private Auteur auteur;
     
-    @Column
+    
     @ManyToOne
 	@JsonView(Views.Livre.class)
 	@JoinColumn(name="editeur")
     private Editeur editeur;
 
-    @Column
     @ManyToOne
 	@JsonView(Views.Livre.class)
 	@JoinColumn(name="collection")
     private Collection collection;
 
-    public Livre(Integer id, String titre, String resume, int annee, Editeur editeur, Collection collection) {
+    public Livre(Integer id, String titre, String resume, int annee, Editeur editeur, Collection collection, Auteur auteur) {
         this.id = id;
         this.titre = titre;
         this.resume = resume;
         this.annee = annee;
+        this.auteur = auteur;
         this.editeur = editeur;
         this.collection = collection;
     }
@@ -107,8 +106,20 @@ public class Livre {
     public void setCollection(Collection collection) {
         this.collection = collection;
     }
+    
+    
+    
+    
 
-    public Livre(String titre, String resume, int annee, Editeur editeur, Collection collection) {
+    public Auteur getAuteur() {
+		return auteur;
+	}
+
+	public void setAuteur(Auteur auteur) {
+		this.auteur = auteur;
+	}
+
+	public Livre(String titre, String resume, int annee, Editeur editeur, Collection collection) {
         this.titre = titre;
         this.resume = resume;
         this.annee = annee;

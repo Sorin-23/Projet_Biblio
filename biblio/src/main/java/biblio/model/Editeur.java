@@ -30,7 +30,7 @@ public class Editeur {
 	@JsonView(Views.Common.class)
 	private String pays;
 	
-	@OneToMany(mappedBy="livre")
+	@OneToMany(mappedBy="editeur")
 	@JsonView(Views.editeurWithLivres.class)
 	private List<Livre> livres;
 	
