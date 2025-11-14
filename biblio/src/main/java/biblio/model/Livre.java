@@ -36,11 +36,11 @@ public class Livre {
     private Auteur auteur;
     
     @Column
-    @Jsonview(Views.Common.class)
+    @JsonView(Views.Common.class)
     private Editeur editeur;
 
     @Column
-    @Json(Views.Common.class)
+    @JsonView(Views.Common.class)
     private Collection collection;
 
     public Livre(Integer id, String titre, String resume, int annee, Editeur editeur, Collection collection) {

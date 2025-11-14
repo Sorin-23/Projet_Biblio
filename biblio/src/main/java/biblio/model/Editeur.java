@@ -32,7 +32,7 @@ public class Editeur {
 	
 	@OneToMany(mappedBy="livre")
 	@JsonView(Views.editeurWithLivres.class)
-	private List<Livres> livres;
+	private List<Livre> livres;
 	
 	
 	public Editeur() {
