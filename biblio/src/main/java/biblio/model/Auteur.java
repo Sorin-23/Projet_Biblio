@@ -8,7 +8,7 @@ import biblio.view.Views;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "auteurs")
+@Table(name = "auteur")
 public class Auteur {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)

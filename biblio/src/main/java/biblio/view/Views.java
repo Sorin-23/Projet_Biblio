@@ -1,7 +1,5 @@
 package biblio.view;
 
-import biblio.model.Editeur;
-
 public class Views {
 
 	public class Common {} 
@@ -13,6 +11,8 @@ public class Views {
 	public class Editeur extends Common{}
 
 	public class Collection extends Common{}
+	
+	public class Personne extends Common{}
 
 	public class collectionWithLivres extends Collection{}
 

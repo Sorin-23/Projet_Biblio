@@ -59,6 +59,9 @@ public class Livre {
         this.collection = collection;
     }
 
+    public Livre() {}
+    
+    
     public Integer getId() {
         return id;
     }
