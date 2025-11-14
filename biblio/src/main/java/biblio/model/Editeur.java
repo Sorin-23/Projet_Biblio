@@ -1,10 +1,16 @@
 package biblio.model;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonView;
+
+import biblio.view.Views;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -13,13 +19,21 @@ public class Editeur {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonView(Views.Common.class)
 	private Integer id;
 	
 	@Column(nullable = false, length = 100)
+	@JsonView(Views.Common.class)
 	private String nom;
 	
 	@Column(nullable = false, length = 100)
+	@JsonView(Views.Common.class)
 	private String pays;
+	
+	@OneToMany(mappedBy="livre")
+	@JsonView(Views.editeurWithLivres.class)
+	private List<Livres> livres;
+	
 	
 	public Editeur() {
 	}
