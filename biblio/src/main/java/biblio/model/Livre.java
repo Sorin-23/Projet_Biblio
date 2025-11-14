@@ -72,9 +72,6 @@ public class Livre {
 		this.editeur = editeur;
 		this.collection = collection;
 	}
-
-
-	public Livre() {}
     
     
     public Integer getId() {
