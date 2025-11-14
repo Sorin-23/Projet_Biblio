@@ -43,6 +43,10 @@ public class Editeur {
 		this.nom = nom;
 		this.pays = pays;
 	}
+	public Editeur( String nom, String pays) {
+		this.nom = nom;
+		this.pays = pays;
+	}
 
 	public Integer getId() {
 		return id;
