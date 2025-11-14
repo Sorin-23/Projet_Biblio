@@ -10,9 +10,9 @@ import { EditeurDto } from '../../../dto/editeur-dto';
 import { CollectionDto } from '../../../dto/collection-dto';
 
 import { LivreService } from '../../../service/livre-service';
-import { AuteurService } from '../../../service/auteur.service';
-//import { EditeurService } from '../../../service/editeur-service';
-//import { CollectionService } from '../../../service/collection-service';
+import { AuteurService } from '../../../service/auteur-service';
+import { EditeurService } from '../../../service/editeur-service';
+import { CollectionService } from '../../../service/collection-service';
 
 @Component({
   selector: 'app-livre-page',

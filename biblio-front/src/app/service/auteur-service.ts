@@ -7,7 +7,7 @@ import { AuteurDto } from '../dto/auteur-dto';
   providedIn: 'root',
 })
 export class AuteurService {
-  private apiUrl: string = '/auteur';   // change if your backend uses /api/auteurs, etc.
+  private apiUrl: string = '/auteur';   
   private refresh$: Subject<void> = new Subject<void>();
 
   constructor(private http: HttpClient) {}

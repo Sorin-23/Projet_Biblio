@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } 
 import { Observable } from 'rxjs';
 
 import { AuteurDto } from '../../../dto/auteur-dto';
-import { AuteurService } from '../../../service/auteur.service';
+import { AuteurService } from '../../../service/auteur-service';
 
 @Component({
   selector: 'app-auteur-page',
