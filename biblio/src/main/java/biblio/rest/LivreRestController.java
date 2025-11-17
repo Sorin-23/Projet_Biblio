@@ -65,7 +65,7 @@ public class LivreRestController {
 		Livre livre = this.srv.getById(id).orElseThrow(IdNotFoundException::new);
 		BeanUtils.copyProperties(request, livre);
 		
-		this.srv.create(livre);
+		this.srv.update(livre);
 		
 		return LivreResponse.convert(livre);
 	}

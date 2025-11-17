@@ -203,7 +203,7 @@ public class AuteurRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(roles = {"ADMIN", "EDITEUR"})
     void shouldCreateStatusOk() throws Exception {
         // given
 
@@ -215,7 +215,7 @@ public class AuteurRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(roles = {"ADMIN", "EDITEUR"})
     void shouldCreateUseDaoSave() throws Exception {
         // given
         ArgumentCaptor<Auteur> auteurCaptor = ArgumentCaptor.captor();
@@ -245,7 +245,7 @@ public class AuteurRestControllerTest {
         "'    ',prenom,'   '",
         ",prenom,"
     })
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(roles = {"ADMIN", "EDITEUR"})
     void shouldCreateStatusBadRequest(String nom, String prenom, String nationalite) throws Exception {
         // given
 
@@ -299,9 +299,10 @@ public class AuteurRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(roles = {"ADMIN", "EDITEUR"})
     void shouldUpdateStatusOk() throws Exception {
         // given
+    	Mockito.when(srv.getById(AUTEUR_ID)).thenReturn(Optional.of(new Auteur()));
 
         // when
         ResultActions result = this.createAndPut(AUTEUR_NAME, AUTEUR_PRENOM, AUTEUR_NATIONALITE);
@@ -311,9 +312,13 @@ public class AuteurRestControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = "ADMIN")
-    void shouldUpdateUseDaoSave() throws Exception {
+    @WithMockUser(roles = {"ADMIN", "EDITEUR"})
+    void shouldUpdateUseSrvUpdate() throws Exception {
         // given
+    	Auteur a = new Auteur();
+        a.setId(AUTEUR_ID);
+
+        Mockito.when(srv.getById(AUTEUR_ID)).thenReturn(Optional.of(a));
         ArgumentCaptor<Auteur> auteurCaptor = ArgumentCaptor.captor();
 
         // when
@@ -341,7 +346,7 @@ public class AuteurRestControllerTest {
         "'    ',prenom,'   '",
         ",prenom,"
     })
-    @WithMockUser(roles = "ADMIN")
+    @WithMockUser(roles = {"ADMIN", "EDITEUR"})
     void shouldUpdateStatusBadRequest(String nom, String prenom, String nationalite) throws Exception {
         // given
 
@@ -363,12 +368,56 @@ public class AuteurRestControllerTest {
         request.setNationalite(nationalite);
 
         return this.mockMvc.perform(MockMvcRequestBuilders
-            .put(API_URL)
+            .put(API_URL_BY_ID)
             .with(SecurityMockMvcRequestPostProcessors.csrf())
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(mapper.writeValueAsString(request))
         );
     }
     
+    @Test
+    void shouldDeleteStatusUnauthorized() throws Exception {
+        ResultActions result = this.mockMvc.perform(
+                MockMvcRequestBuilders.delete(API_URL_BY_ID)
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+        );
+
+        result.andExpect(MockMvcResultMatchers.status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser
+    void shouldDeleteStatusForbidden() throws Exception {
+        ResultActions result = this.mockMvc.perform(
+                MockMvcRequestBuilders.delete(API_URL_BY_ID)
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+        );
+
+        result.andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void shouldDeleteStatusOk() throws Exception {
+
+        ResultActions result = this.mockMvc.perform(
+                MockMvcRequestBuilders.delete(API_URL_BY_ID)
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+        );
+
+        result.andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void shouldDeleteUseServiceDeleteById() throws Exception {
+
+        this.mockMvc.perform(
+                MockMvcRequestBuilders.delete(API_URL_BY_ID)
+                        .with(SecurityMockMvcRequestPostProcessors.csrf())
+        );
+
+        Mockito.verify(this.srv).deleteById(AUTEUR_ID);
+    }
     
 }

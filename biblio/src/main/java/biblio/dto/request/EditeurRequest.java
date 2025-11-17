@@ -7,6 +7,7 @@ public class EditeurRequest {
 	@NotBlank
 	private String nom;
 	
+	@NotBlank
 	private String pays;
 	
 	public String getPays() {
