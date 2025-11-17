@@ -1,24 +1,29 @@
 package biblio.rest;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import biblio.config.JwtHeaderFilter;
 import biblio.model.Livre;
 import biblio.service.LivreService;
 
 
-@WebMvcTest(LivreRestController.class)
+@WebMvcTest(controllers = LivreRestController.class, excludeFilters = {
+	    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtHeaderFilter.class)})
 @EnableMethodSecurity(prePostEnabled = true)
 public class LivreRestControllerTest {
 
@@ -36,7 +41,7 @@ public class LivreRestControllerTest {
     private MockMvc mockMvc;
     
     @Test
-    void shouldFindAllStatusUnauthorized() throws Exception {
+    void shouldGetAllStatusUnauthorized() throws Exception {
         // given
 
         // when
@@ -47,8 +52,8 @@ public class LivreRestControllerTest {
     }
     
     @Test
-    //@WithMockUser
-    void shouldFindAllStatusOk() throws Exception {
+    @WithMockUser
+    void shouldGetAllStatusOk() throws Exception {
         // given
 
         // when
@@ -59,7 +64,7 @@ public class LivreRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetAllUseServiceGetAll() throws Exception {
         // given
 
@@ -71,8 +76,8 @@ public class LivreRestControllerTest {
     }
     
     @Test
-    //@WithMockUser
-    void shouldFindAllReturnAttributes() throws Exception {
+    @WithMockUser
+    void shouldGetAllReturnAttributes() throws Exception {
         // given
         Livre l1 = new Livre();
 
@@ -105,10 +110,10 @@ public class LivreRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetByIdStatusOk() throws Exception {
         // given
-        Mockito.when(this.srv.getById(LIVRE_ID)).thenReturn(new Livre());
+        Mockito.when(this.srv.getById(LIVRE_ID)).thenReturn(Optional.of(new Livre()));
 
         // when
         ResultActions result = this.mockMvc.perform(MockMvcRequestBuilders.get(API_URL_BY_ID));
@@ -118,10 +123,10 @@ public class LivreRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetByIdUseServiceGetById() throws Exception {
         // given
-        Mockito.when(this.srv.getById(LIVRE_ID)).thenReturn(new Livre());
+        Mockito.when(this.srv.getById(LIVRE_ID)).thenReturn(Optional.of(new Livre()));
 
         // when
         this.mockMvc.perform(MockMvcRequestBuilders.get(API_URL_BY_ID));
@@ -131,7 +136,7 @@ public class LivreRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetByIdStatusNotFoundWhenIdNotFound() throws Exception {
         // given
 
@@ -143,7 +148,7 @@ public class LivreRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetByIdReturnAttributes() throws Exception {
         // given
         Livre l1 = new Livre();
@@ -152,7 +157,7 @@ public class LivreRestControllerTest {
         l1.setTitre(LIVRE_NAME);
         l1.setResume(LIVRE_RESUME);
         l1.setAnnee(LIVRE_ANNEE);
-        Mockito.when(this.srv.getById(LIVRE_ID)).thenReturn(l1);
+        Mockito.when(this.srv.getById(LIVRE_ID)).thenReturn(Optional.of(l1));
 
         // when
         ResultActions result = this.mockMvc.perform(MockMvcRequestBuilders.get(API_URL_BY_ID));
@@ -160,7 +165,7 @@ public class LivreRestControllerTest {
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
         result.andExpect(MockMvcResultMatchers.jsonPath("$.titre").exists());
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.resume").doesNotExist());
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.resume").exists());
         result.andExpect(MockMvcResultMatchers.jsonPath("$.annee").exists());
     }
     

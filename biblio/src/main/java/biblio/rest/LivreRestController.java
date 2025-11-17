@@ -2,7 +2,9 @@ package biblio.rest;
 
 import java.util.List;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,12 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
+import biblio.dto.request.LivreRequest;
+import biblio.dto.response.LivreResponse;
+import biblio.exception.IdNotFoundException;
 import biblio.model.Livre;
 import biblio.service.LivreService;
 import biblio.view.Views;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/livre")
+@PreAuthorize("hasAnyRole('USER', 'EDITEUR', 'ADMIN', 'AUTEUR')")
 public class LivreRestController {
 
 	@Autowired
@@ -33,27 +40,39 @@ public class LivreRestController {
 	
 	@GetMapping("/{id}")
 	@JsonView(Views.Livre.class)
-	public Livre ficheLivre(@PathVariable Integer id) {
-		return this.srv.getById(id);
+	public LivreResponse ficheLivre(@PathVariable Integer id) {
+		return this.srv.getById(id).map(LivreResponse::convert).orElseThrow(IdNotFoundException::new);
 	}
 	
 	@PostMapping
 	@JsonView(Views.Livre.class)
-	public Livre ajouterStagiaire(@RequestBody Livre livre)
+	@PreAuthorize("hasAnyRole('AUTEUR', 'EDITEUR', 'ADMIN')")
+	public LivreResponse ajouterLivre(@Valid @RequestBody LivreRequest request)
 	{
-		return (Livre) this.srv.create(livre);
+		Livre livre = new Livre();
+		BeanUtils.copyProperties(request, livre);
+		
+		this.srv.create(livre);
+		
+		return LivreResponse.convert(livre);
 	}
 
 	@PutMapping("/{id}")
 	@JsonView(Views.Livre.class)
-	public Livre modifierStagiaire(@PathVariable Integer id,@RequestBody Livre livre)
+	@PreAuthorize("hasAnyRole('EDITEUR', 'ADMIN')")
+	public LivreResponse modifierLivre(@PathVariable Integer id,@Valid @RequestBody LivreRequest request)
 	{
-		livre.setId(id);
-		return (Livre) this.srv.update(livre);
+		Livre livre = this.srv.getById(id).orElseThrow(IdNotFoundException::new);
+		BeanUtils.copyProperties(request, livre);
+		
+		this.srv.create(livre);
+		
+		return LivreResponse.convert(livre);
 	}
 
 	@DeleteMapping("/{id}")
-	public void deleteStagiaire(@PathVariable Integer id)
+	@PreAuthorize("hasRole('ADMIN')")
+	public void deleteLivre(@PathVariable Integer id)
 	{
 		this.srv.deleteById(id);
 	}

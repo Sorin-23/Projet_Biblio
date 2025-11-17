@@ -1,29 +1,44 @@
 package biblio.rest;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import biblio.config.JwtHeaderFilter;
+import biblio.dto.request.AuteurRequest;
 import biblio.model.Auteur;
 import biblio.service.AuteurService;
 
-@WebMvcTest(AuteurRestController.class)
+@WebMvcTest(controllers = AuteurRestController.class, excludeFilters = {
+	    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtHeaderFilter.class)})
 @EnableMethodSecurity(prePostEnabled = true)
 public class AuteurRestControllerTest {
 	private static final int AUTEUR_ID = 1;
-    private static final String AUTEUR_NAME = "Para";
-    private static final String AUTEUR_PRENOM = "chute";
-    private static final String AUTEUR_NATIONALITE = "Fr";
-    private static final String API_URL = "/api/AUTEUR";
+    private static final String AUTEUR_NAME = "Dumas";
+    private static final String AUTEUR_PRENOM = "Alexandre";
+    private static final String AUTEUR_NATIONALITE = "Française";
+    private static final String API_URL = "/api/auteur";
     private static final String API_URL_BY_ID = API_URL + "/" + AUTEUR_ID;
     
     @MockitoBean
@@ -33,7 +48,7 @@ public class AuteurRestControllerTest {
     private MockMvc mockMvc;
     
     @Test
-    void shouldFindAllStatusUnauthorized() throws Exception {
+    void shouldGetAllStatusUnauthorized() throws Exception {
         // given
 
         // when
@@ -44,8 +59,8 @@ public class AuteurRestControllerTest {
     }
     
     @Test
-    //@WithMockUser
-    void shouldFindAllStatusOk() throws Exception {
+    @WithMockUser
+    void shouldGetAllStatusOk() throws Exception {
         // given
 
         // when
@@ -56,7 +71,7 @@ public class AuteurRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetAllUseServiceGetAll() throws Exception {
         // given
 
@@ -68,30 +83,34 @@ public class AuteurRestControllerTest {
     }
     
     @Test
-    //@WithMockUser
-    void shouldFindAllReturnAttributes() throws Exception {
-        // given
+    @WithMockUser
+    void shouldGetAllReturnAttributes() throws Exception {
+
+        // --- GIVEN ---
         Auteur a1 = new Auteur();
+        a1.setId(1);
+        a1.setNom("Dumas");
+        a1.setPrenom("Alexandre");
+        a1.setNationalite("Française");
 
-        a1.setId(AUTEUR_ID);
-        a1.setNom(AUTEUR_NAME);
-        a1.setPrenom(AUTEUR_PRENOM);
-        a1.setNationalite(AUTEUR_NATIONALITE);
+        // On retourne la liste de Auteur
+        Mockito.when(srv.getAll()).thenReturn(List.of(a1));
 
-        Mockito.when(this.srv.getAll()).thenReturn(List.of(a1));
+        // --- WHEN ---
+        ResultActions result = this.mockMvc.perform(
+                MockMvcRequestBuilders.get("/api/auteur")
+        );
 
-        // when
-        ResultActions result = this.mockMvc.perform(MockMvcRequestBuilders.get(API_URL));
-
-        // then
-        result.andExpect(MockMvcResultMatchers.jsonPath("$[*].id").exists());
-        result.andExpect(MockMvcResultMatchers.jsonPath("$[*].nom").exists());
-        result.andExpect(MockMvcResultMatchers.jsonPath("$[*].prenom").exists());
-        result.andExpect(MockMvcResultMatchers.jsonPath("$[*].nationalite").exists());
+        // --- THEN ---
+        
+        result.andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
+              .andExpect(MockMvcResultMatchers.jsonPath("$[0].nom").value("Dumas"))
+              .andExpect(MockMvcResultMatchers.jsonPath("$[0].prenom").value("Alexandre"))
+              .andExpect(MockMvcResultMatchers.jsonPath("$[0].nationalite").value("Française"));
     }
     
     @Test
-    void shouldGetdByIdStatusUnauthorized() throws Exception {
+    void shouldGetByIdStatusUnauthorized() throws Exception {
         // given
 
         // when
@@ -100,13 +119,12 @@ public class AuteurRestControllerTest {
         // then
         result.andExpect(MockMvcResultMatchers.status().isUnauthorized());
     }
-
+    
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetByIdStatusOk() throws Exception {
         // given
-        Mockito.when(this.srv.getById(AUTEUR_ID)).thenReturn(new Auteur());
-
+    	Mockito.when(this.srv.getById(AUTEUR_ID)).thenReturn(Optional.of(new Auteur()));
         // when
         ResultActions result = this.mockMvc.perform(MockMvcRequestBuilders.get(API_URL_BY_ID));
 
@@ -115,10 +133,10 @@ public class AuteurRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetByIdUseServiceGetById() throws Exception {
         // given
-        Mockito.when(this.srv.getById(AUTEUR_ID)).thenReturn(new Auteur());
+        Mockito.when(this.srv.getById(AUTEUR_ID)).thenReturn(Optional.of(new Auteur()));
 
         // when
         this.mockMvc.perform(MockMvcRequestBuilders.get(API_URL_BY_ID));
@@ -128,10 +146,9 @@ public class AuteurRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetByIdStatusNotFoundWhenIdNotFound() throws Exception {
         // given
-
         // when
         ResultActions result = this.mockMvc.perform(MockMvcRequestBuilders.get(API_URL_BY_ID));
 
@@ -140,7 +157,7 @@ public class AuteurRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetByIdReturnAttributes() throws Exception {
         // given
         Auteur a1 = new Auteur();
@@ -149,7 +166,7 @@ public class AuteurRestControllerTest {
         a1.setNom(AUTEUR_NAME);
         a1.setPrenom(AUTEUR_PRENOM);
         a1.setNationalite(AUTEUR_NATIONALITE);
-        Mockito.when(this.srv.getById(AUTEUR_ID)).thenReturn(a1);
+        Mockito.when(this.srv.getById(AUTEUR_ID)).thenReturn(Optional.of(a1));
 
         // when
         ResultActions result = this.mockMvc.perform(MockMvcRequestBuilders.get(API_URL_BY_ID));
@@ -157,8 +174,200 @@ public class AuteurRestControllerTest {
         // then
         result.andExpect(MockMvcResultMatchers.jsonPath("$.id").exists());
         result.andExpect(MockMvcResultMatchers.jsonPath("$.nom").exists());
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.prenom").doesNotExist());
+        result.andExpect(MockMvcResultMatchers.jsonPath("$.prenom").exists());
         result.andExpect(MockMvcResultMatchers.jsonPath("$.nationalite").exists());
+    }
+    
+    
+    @Test
+    void shouldCreateStatusUnauthorized() throws Exception {
+        // given
+
+        // when
+        ResultActions result = this.createAndPost(AUTEUR_NAME, AUTEUR_PRENOM, AUTEUR_NATIONALITE);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser
+    void shouldCreateStatusForbidden() throws Exception {
+        // given
+
+        // when
+        ResultActions result = this.createAndPost(AUTEUR_NAME, AUTEUR_PRENOM, AUTEUR_NATIONALITE);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void shouldCreateStatusOk() throws Exception {
+        // given
+
+        // when
+        ResultActions result = this.createAndPost(AUTEUR_NAME, AUTEUR_PRENOM, AUTEUR_NATIONALITE);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void shouldCreateUseDaoSave() throws Exception {
+        // given
+        ArgumentCaptor<Auteur> auteurCaptor = ArgumentCaptor.captor();
+
+        // when
+        this.createAndPost(AUTEUR_NAME, AUTEUR_PRENOM, AUTEUR_NATIONALITE);
+
+        // then
+        Mockito.verify(this.srv).create(auteurCaptor.capture());
+
+        Auteur auteur = auteurCaptor.getValue();
+
+        Assertions.assertEquals(AUTEUR_NAME, auteur.getNom());
+        Assertions.assertEquals(AUTEUR_PRENOM, auteur.getPrenom());
+        Assertions.assertEquals(AUTEUR_NATIONALITE, auteur.getNationalite());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "'','',nationalite",
+        "'  ','   ', nationalite",
+        ",,nationalitee",
+        "nom,,",
+        "nom,'',''",
+        "nom,'     ', '     '",
+        "'',prenom,''",
+        "'    ',prenom,'   '",
+        ",prenom,"
+    })
+    @WithMockUser(roles = "ADMIN")
+    void shouldCreateStatusBadRequest(String nom, String prenom, String nationalite) throws Exception {
+        // given
+
+        // when
+        ResultActions result = this.createAndPost(nom, prenom, nationalite);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        Mockito.verify(this.srv, Mockito.never()).create(Mockito.any());
+    }
+
+    private ResultActions createAndPost(String nom, String prenom, String nationalite) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        AuteurRequest request = new AuteurRequest();
+
+        request.setNom(nom);
+        request.setPrenom(prenom);
+        request.setNationalite(nationalite);
+
+        return this.mockMvc.perform(MockMvcRequestBuilders
+            .post(API_URL)
+            .with(SecurityMockMvcRequestPostProcessors.csrf())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(mapper.writeValueAsString(request))
+        );
+    }
+    
+    
+    @Test
+    void shouldUpdateStatusUnauthorized() throws Exception {
+        // given
+
+        // when
+        ResultActions result = this.createAndPut(AUTEUR_NAME, AUTEUR_PRENOM, AUTEUR_NATIONALITE);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.status().isUnauthorized());
+    }
+
+    @Test
+    @WithMockUser
+    void shouldUpdateStatusForbidden() throws Exception {
+        // given
+
+        // when
+        ResultActions result = this.createAndPut(AUTEUR_NAME, AUTEUR_PRENOM, AUTEUR_NATIONALITE);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void shouldUpdateStatusOk() throws Exception {
+        // given
+
+        // when
+        ResultActions result = this.createAndPut(AUTEUR_NAME, AUTEUR_PRENOM, AUTEUR_NATIONALITE);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    @WithMockUser(roles = "ADMIN")
+    void shouldUpdateUseDaoSave() throws Exception {
+        // given
+        ArgumentCaptor<Auteur> auteurCaptor = ArgumentCaptor.captor();
+
+        // when
+        this.createAndPut(AUTEUR_NAME, AUTEUR_PRENOM, AUTEUR_NATIONALITE);
+
+        // then
+        Mockito.verify(this.srv).update(auteurCaptor.capture());
+
+        Auteur auteur = auteurCaptor.getValue();
+
+        Assertions.assertEquals(AUTEUR_NAME, auteur.getNom());
+        Assertions.assertEquals(AUTEUR_PRENOM, auteur.getPrenom());
+        Assertions.assertEquals(AUTEUR_NATIONALITE, auteur.getNationalite());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+        "'','',nationalite",
+        "'  ','   ', nationalite",
+        ",,nationalitee",
+        "nom,,",
+        "nom,'',''",
+        "nom,'     ', '     '",
+        "'',prenom,''",
+        "'    ',prenom,'   '",
+        ",prenom,"
+    })
+    @WithMockUser(roles = "ADMIN")
+    void shouldUpdateStatusBadRequest(String nom, String prenom, String nationalite) throws Exception {
+        // given
+
+        // when
+        ResultActions result = this.createAndPut(nom, prenom, nationalite);
+
+        // then
+        result.andExpect(MockMvcResultMatchers.status().isBadRequest());
+
+        Mockito.verify(this.srv, Mockito.never()).update(Mockito.any());
+    }
+
+    private ResultActions createAndPut(String nom, String prenom, String nationalite) throws Exception {
+        ObjectMapper mapper = new ObjectMapper();
+        AuteurRequest request = new AuteurRequest();
+
+        request.setNom(nom);
+        request.setPrenom(prenom);
+        request.setNationalite(nationalite);
+
+        return this.mockMvc.perform(MockMvcRequestBuilders
+            .put(API_URL)
+            .with(SecurityMockMvcRequestPostProcessors.csrf())
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .content(mapper.writeValueAsString(request))
+        );
     }
     
     

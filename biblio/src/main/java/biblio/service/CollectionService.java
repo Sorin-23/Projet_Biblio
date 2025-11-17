@@ -1,6 +1,7 @@
 package biblio.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,8 @@ public class CollectionService {
 	@Autowired
 	IDAOCollection daoCollection;
 
-	public Collection getById(Integer id) {
-	    return daoCollection.findById(id).orElse(null);
+	public Optional<Collection> getById(Integer id) {
+	    return daoCollection.findById(id);
 	}
 
 

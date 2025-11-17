@@ -1,32 +1,34 @@
 package biblio.rest;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import biblio.config.JwtHeaderFilter;
 import biblio.model.Editeur;
 import biblio.service.EditeurService;
 
-@WebMvcTest(EditeurRestController.class)
+@WebMvcTest(controllers = EditeurRestController.class, excludeFilters = {
+	    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtHeaderFilter.class)})
 @EnableMethodSecurity(prePostEnabled = true)
 public class EditeurRestControllerTest {
 	private static final int EDITEUR_ID = 1;
-    private static final String EDITEUR_NAME = "Parachute";
+    private static final String EDITEUR_NAME = "Gallimard";
     private static final String EDITEUR_PAYS = "France";
-    private static final String API_URL = "/api/Editeur";
+    private static final String API_URL = "/api/editeur";
     private static final String API_URL_BY_ID = API_URL + "/" + EDITEUR_ID;
     
     @MockitoBean
@@ -47,7 +49,7 @@ public class EditeurRestControllerTest {
     }
     
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetAllStatusOk() throws Exception {
         // given
 
@@ -59,7 +61,7 @@ public class EditeurRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetAllUseServiceGetAll() throws Exception {
         // given
 
@@ -71,7 +73,7 @@ public class EditeurRestControllerTest {
     }
     
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldFindAllReturnAttributes() throws Exception {
         // given
         Editeur e1 = new Editeur();
@@ -105,10 +107,10 @@ public class EditeurRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetByIdStatusOk() throws Exception {
         // given
-        Mockito.when(this.srv.getById(EDITEUR_ID)).thenReturn(new Editeur());
+        Mockito.when(this.srv.getById(EDITEUR_ID)).thenReturn(Optional.of(new Editeur()));
 
         // when
         ResultActions result = this.mockMvc.perform(MockMvcRequestBuilders.get(API_URL_BY_ID));
@@ -118,10 +120,10 @@ public class EditeurRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetByIdUseServiceGetById() throws Exception {
         // given
-        Mockito.when(this.srv.getById(EDITEUR_ID)).thenReturn(new Editeur());
+        Mockito.when(this.srv.getById(EDITEUR_ID)).thenReturn(Optional.of(new Editeur()));
 
         // when
         this.mockMvc.perform(MockMvcRequestBuilders.get(API_URL_BY_ID));
@@ -131,7 +133,7 @@ public class EditeurRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetByIdStatusNotFoundWhenIdNotFound() throws Exception {
         // given
 
@@ -143,7 +145,7 @@ public class EditeurRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetByIdReturnAttributes() throws Exception {
         // given
         Editeur e1 = new Editeur();
@@ -152,7 +154,7 @@ public class EditeurRestControllerTest {
         e1.setNom(EDITEUR_NAME);
         e1.setPays(EDITEUR_PAYS);
      
-        Mockito.when(this.srv.getById(EDITEUR_ID)).thenReturn(e1);
+        Mockito.when(this.srv.getById(EDITEUR_ID)).thenReturn(Optional.of(e1));
 
         // when
         ResultActions result = this.mockMvc.perform(MockMvcRequestBuilders.get(API_URL_BY_ID));
@@ -162,5 +164,8 @@ public class EditeurRestControllerTest {
         result.andExpect(MockMvcResultMatchers.jsonPath("$.nom").exists());
         result.andExpect(MockMvcResultMatchers.jsonPath("$.pays").exists());
     }
+    
+    
+    
 
 }
