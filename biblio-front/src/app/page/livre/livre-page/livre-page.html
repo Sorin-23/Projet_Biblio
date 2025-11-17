@@ -36,7 +36,7 @@
     <select [formControl]="collectionCtrl">
       <option [ngValue]="null">-- Choisir une collection --</option>
       <option *ngFor="let c of (collections$ | async)" [ngValue]="c">
-        {{ c.libelle }}
+        {{ c.nom }}
       </option>
     </select>
   </div>
@@ -67,7 +67,7 @@
       <td>{{ l.annee }}</td>
       <td>{{ l.auteur?.prenom }} {{ l.auteur?.nom }}</td>
       <td>{{ l.editeur?.nom }}</td>
-      <td>{{ l.collection?.libelle }}</td>
+      <td>{{ l.collection?.nom }}</td>
       <td>
         <button (click)="editer(l)">Modifier</button>
         <button (click)="supprimer(l)">Supprimer</button>

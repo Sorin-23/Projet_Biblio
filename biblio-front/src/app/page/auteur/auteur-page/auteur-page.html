@@ -1,4 +1,4 @@
-<form [formGroup]="auteurForm" (ngSubmit)="saveAuteur()">
+<form [formGroup]="auteurForm" (ngSubmit)="creerOuModifierAuteur()">
   <input formControlName="nom" placeholder="Nom" />
   <input formControlName="prenom" placeholder="Prénom" />
   <input formControlName="nationalite" placeholder="Nationalité" />
@@ -6,7 +6,7 @@
   <button type="submit">
     {{ editingAuteur ? 'Mettre à jour' : 'Créer' }}
   </button>
-  <button type="button" *ngIf="editingAuteur" (click)="cancelEdit()">Annuler</button>
+  <!--button type="button" *ngIf="editingAuteur" (click)="annuler()">Annuler</button-->
 </form>
 
 <table>
@@ -16,7 +16,7 @@
     <td>{{ a.nationalite }}</td>
     <td>
       <button (click)="editAuteur(a)">Modifier</button>
-      <button (click)="deleteAuteur(a)">Supprimer</button>
+      <button (click)="supprimerAuteur(a)">Supprimer</button>
     </td>
   </tr>
 </table>
