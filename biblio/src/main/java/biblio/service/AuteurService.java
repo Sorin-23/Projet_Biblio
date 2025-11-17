@@ -1,6 +1,7 @@
 package biblio.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,8 @@ public class AuteurService {
 	@Autowired
 	IDAOAuteur daoAuteur;
 
-	public Auteur getById(Integer id) {
-	    return daoAuteur.findById(id).orElse(null);
+	public Optional<Auteur> getById(Integer id) {
+	    return daoAuteur.findById(id);
 	}
 
 

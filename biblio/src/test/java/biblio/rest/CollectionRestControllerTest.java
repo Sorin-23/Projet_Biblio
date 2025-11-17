@@ -1,31 +1,35 @@
 package biblio.rest;
 
 import java.util.List;
+import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import biblio.config.JwtHeaderFilter;
+import biblio.dao.IDAOCollection;
 import biblio.model.Collection;
 import biblio.service.CollectionService;
 
-@WebMvcTest(CollectionRestController.class)
+@WebMvcTest(controllers = CollectionRestController.class, excludeFilters = {
+	    @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = JwtHeaderFilter.class)})
 @EnableMethodSecurity(prePostEnabled = true)
 public class CollectionRestControllerTest {
 	
 	private static final int COLLECTION_ID = 1;
-    private static final String COLLECTION_NAME = "Parachute";
+    private static final String COLLECTION_NAME = "Folio Classique";
     private static final String API_URL = "/api/collection";
     private static final String API_URL_BY_ID = API_URL + "/" + COLLECTION_ID;
     
@@ -47,7 +51,7 @@ public class CollectionRestControllerTest {
     }
     
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetAllStatusOk() throws Exception {
         // given
 
@@ -59,7 +63,7 @@ public class CollectionRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetAllUseServiceGetAll() throws Exception {
         // given
 
@@ -71,7 +75,7 @@ public class CollectionRestControllerTest {
     }
     
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldFindAllReturnAttributes() throws Exception {
         // given
         Collection c1 = new Collection();
@@ -103,10 +107,10 @@ public class CollectionRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetByIdStatusOk() throws Exception {
         // given
-        Mockito.when(this.srv.getById(COLLECTION_ID)).thenReturn(new Collection());
+        Mockito.when(this.srv.getById(COLLECTION_ID)).thenReturn(Optional.of( new Collection()));
 
         // when
         ResultActions result = this.mockMvc.perform(MockMvcRequestBuilders.get(API_URL_BY_ID));
@@ -116,10 +120,10 @@ public class CollectionRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetByIdUseServiceGetById() throws Exception {
         // given
-        Mockito.when(this.srv.getById(COLLECTION_ID)).thenReturn(new Collection());
+        Mockito.when(this.srv.getById(COLLECTION_ID)).thenReturn(Optional.of(new Collection()));
 
         // when
         this.mockMvc.perform(MockMvcRequestBuilders.get(API_URL_BY_ID));
@@ -129,7 +133,7 @@ public class CollectionRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetByIdStatusNotFoundWhenIdNotFound() throws Exception {
         // given
 
@@ -141,7 +145,7 @@ public class CollectionRestControllerTest {
     }
 
     @Test
-    //@WithMockUser
+    @WithMockUser
     void shouldGetByIdReturnAttributes() throws Exception {
         // given
         Collection c1 = new Collection();
@@ -149,7 +153,7 @@ public class CollectionRestControllerTest {
         c1.setId(COLLECTION_ID);
         c1.setNom(COLLECTION_NAME);
      
-        Mockito.when(this.srv.getById(COLLECTION_ID)).thenReturn(c1);
+        Mockito.when(this.srv.getById(COLLECTION_ID)).thenReturn(Optional.of(c1));
 
         // when
         ResultActions result = this.mockMvc.perform(MockMvcRequestBuilders.get(API_URL_BY_ID));
