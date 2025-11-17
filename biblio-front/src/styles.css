@@ -1,1 +1,98 @@
-/* You can add global styles to this file, and also import other style files */
+h1 {
+    text-align: center;
+    margin: 20px 0;
+    font-family: Arial, sans-serif;
+    color:#c0392b;
+}
+
+div {
+    margin-bottom: 15px;
+    font-family: Arial, sans-serif;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-family: Arial, sans-serif;
+    background: #fff;
+}
+
+th {
+    background: #f0f0f0;
+    padding: 10px;
+    border-bottom: 2px solid #ccc;
+    text-align: left;
+}
+
+td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+tbody tr:nth-child(even) {
+    background: #f9f9f9;
+}
+
+tbody tr:hover {
+    background: #eef5ff;
+}
+
+a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+button {
+    padding: 6px 12px;
+    border: none;
+    background: #3498db;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-left: 10px;
+}
+
+button:hover {
+    background: #2c80b4;
+}
+
+button:last-child {
+    background: #e74c3c;
+}
+
+button:last-child:hover {
+    background: #c0392b;
+}
+
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #333;
+    background: white;
+    transition: 0.2s;
+}
+
+.card:hover {
+    background: #eef5ff;
+    border-color: #b6d0ff;
+}
+
+.card h2 {
+    margin: 0 0 10px;
+    color: #2c3e50;
+}

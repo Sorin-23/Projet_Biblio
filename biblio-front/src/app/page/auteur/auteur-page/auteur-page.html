@@ -1,22 +1,70 @@
-<form [formGroup]="auteurForm" (ngSubmit)="creerOuModifierAuteur()">
-  <input formControlName="nom" placeholder="Nom" />
-  <input formControlName="prenom" placeholder="Prénom" />
-  <input formControlName="nationalite" placeholder="Nationalité" />
+<h1>Liste des auteurs</h1>
 
-  <button type="submit">
-    {{ editingAuteur ? 'Mettre à jour' : 'Créer' }}
-  </button>
-  <!--button type="button" *ngIf="editingAuteur" (click)="annuler()">Annuler</button-->
+<form (ngSubmit)="creerOuModifier()" [formGroup]="auteurForm">
+    <div>
+        <input type="text" formControlName="nom" />
+       
+
+        @if (nomCtrl.hasError('required')) {
+            <span>Le nom est obligatoire</span>
+        }
+        
+    </div>
+    <div>
+         <input type="text" formControlName="prenom" />
+         @if (prenomCtrl.hasError('required')) {
+            <span>Le prenom est obligatoire</span>
+        }
+    </div>
+    <div>
+        <input type="text" formControlName="nationalite" />
+       
+
+        @if (nationaliteCtrl.hasError('required')) {
+            <span>La nationalité est obligatoire</span>
+        }
+        
+    </div>
+
+    @if (editingAuteur) {
+        <input type="submit" [disabled]="auteurForm.invalid" value="Modifier" />
+    }
+
+    @else {
+        <input type="submit" [disabled]="auteurForm.invalid" value="Créer" />
+    }
 </form>
 
+<hr />
+
 <table>
-  <tr *ngFor="let a of (auteurs$ | async)">
-    <td>{{ a.nom }}</td>
-    <td>{{ a.prenom }}</td>
-    <td>{{ a.nationalite }}</td>
-    <td>
-      <button (click)="editAuteur(a)">Modifier</button>
-      <button (click)="supprimerAuteur(a)">Supprimer</button>
-    </td>
-  </tr>
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Prenom</th>
+            <th>Nationalité</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr *ngFor="let auteur of auteurs$ | async; trackBy: trackAuteur">
+            <td>
+                <a [routerLink]="[ '/auteur', auteur.id ]">{{ auteur.nom }}</a>
+            </td>
+            <td>
+                <a [routerLink]="[ '/auteur', auteur.id ]">{{ auteur.prenom }}</a>
+            </td>
+            <td>
+                <a [routerLink]="[ '/auteur', auteur.id ]">{{ auteur.nationalite }}</a>
+            </td>
+            
+
+            <td>
+                <button (click)="editer(auteur)">Modifier</button>
+                <button (click)="supprimer(auteur)">Supprimer</button>
+            </td>
+        </tr>
+    </tbody>
 </table>
+

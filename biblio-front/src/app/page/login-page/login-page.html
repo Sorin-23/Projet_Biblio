@@ -1,1 +1,22 @@
-<p>login-page works!</p>
+<h1>Se connecter</h1>
+
+@if (loginError) {
+    <div>Nom d'utilisateur ou mot de passe incorrect</div>
+}
+
+<form (ngSubmit)="connecter()" [formGroup]="userForm">
+    <div>
+        <input type="text" formControlName="username" placeholder="Nom d'utilisateur" />
+
+        <span *ngIf="usernameCtrl?.hasError('required')">Le nom d'utilisateur est obligatoire</span>
+    </div>
+
+    <div>
+        <input type="password" formControlName="password" placeholder="Mot de passe" />
+
+        <span *ngIf="passwordCtrl?.hasError('required')">Le mot de passe est obligatoire</span>
+        <span *ngIf="passwordCtrl?.hasError('minlength')">Le mot de passe doit faire 6 caractères minimum</span>
+    </div>
+
+    <input type="submit" [disabled]="userForm.invalid" value="Se connecter" />
+</form>

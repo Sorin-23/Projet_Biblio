@@ -1,1 +1,56 @@
-<p>editeur-page works!</p>
+<h1>Liste des editeurs</h1>
+
+<form (ngSubmit)="creerOuModifier()" [formGroup]="editeurForm">
+    <div>
+        <input type="text" formControlName="label" />
+       
+
+        @if (labelCtrl.hasError('required')) {
+            <span>Le nom est obligatoire</span>
+        }
+        
+    </div>
+    <div>
+         <input type="text" formControlName="pays" />
+         @if (paysCtrl.hasError('required')) {
+            <span>Le pays est obligatoire</span>
+        }
+    </div>
+
+    @if (editingEditeur) {
+        <input type="submit" [disabled]="editeurForm.invalid" value="Modifier" />
+    }
+
+    @else {
+        <input type="submit" [disabled]="editeurForm.invalid" value="Créer" />
+    }
+</form>
+
+<hr />
+
+<table>
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Pays</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr *ngFor="let editeur of editeurs$ | async; trackBy: trackEditeur">
+            <td>
+                <a [routerLink]="[ '/editeur', editeur.id ]">{{ editeur.nom }}</a>
+            </td>
+            <td>
+                <a [routerLink]="[ '/editeur', editeur.id ]">{{ editeur.pays }}</a>
+            </td>
+            
+
+            <td>
+                <button (click)="editer(editeur)">Modifier</button>
+                <button (click)="supprimer(editeur)">Supprimer</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
