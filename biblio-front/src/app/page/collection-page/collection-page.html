@@ -1,1 +1,43 @@
-<p>collection-page works!</p>
+<h1>Liste des collections</h1>
+
+<form (ngSubmit)="creerOuModifier()" [formGroup]="collectionForm">
+    <div>
+        <input type="text" formControlName="label" />
+
+        @if (labelCtrl.hasError('required')) {
+            <span>Le nom est obligatoire</span>
+        }
+    </div>
+
+    @if (editingCollection) {
+        <input type="submit" [disabled]="collectionForm.invalid" value="Modifier" />
+    }
+
+    @else {
+        <input type="submit" [disabled]="collectionForm.invalid" value="Créer" />
+    }
+</form>
+
+<hr />
+
+<table>
+    <thead>
+        <tr>
+            <th>nom</th>
+            <th></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr *ngFor="let collection of collections$ | async; trackBy: trackCollection">
+            <td>
+                <a [routerLink]="[ '/collection', collection.id ]">{{ collection.nom }}</a>
+            </td>
+
+            <td>
+                <button (click)="editer(collection)">Modifier</button>
+                <button (click)="supprimer(collection)">Supprimer</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
