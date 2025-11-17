@@ -2,11 +2,18 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChang
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
+import { apiUrlInterceptor } from './interceptor/api-url-interceptor';
+import { jwtHeaderInterceptor } from './jwt-header-interceptor';
+import { provideHttpClient } from '@angular/common/http';
+import { withInterceptors } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(routes)
+    provideRouter(routes),
+    provideHttpClient(
+      withInterceptors([ apiUrlInterceptor, jwtHeaderInterceptor ])
+    )
   ]
 };

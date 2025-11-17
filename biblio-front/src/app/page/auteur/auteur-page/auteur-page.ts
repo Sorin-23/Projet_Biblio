@@ -50,7 +50,7 @@ export class AuteurPage implements OnInit {
     return value.id;
   }
 
-  public creerOuModifier(): void {
+  public creerOuModifierAuteur(): void {
     if (!this.auteurForm.valid) {
       this.auteurForm.markAllAsTouched();
       return;
@@ -78,7 +78,7 @@ export class AuteurPage implements OnInit {
     this.nationaliteCtrl.setValue('');
   }
 
-  public editer(auteur: AuteurDto): void {
+  public editAuteur(auteur: AuteurDto): void {
     this.editingAuteur = auteur;
 
     this.nomCtrl.setValue(auteur.nom);
@@ -86,7 +86,7 @@ export class AuteurPage implements OnInit {
     this.nationaliteCtrl.setValue(auteur.nationalite);
   }
 
-  public supprimer(auteur: AuteurDto): void {
+  public supprimerAuteur(auteur: AuteurDto): void {
     this.auteurService.deleteById(auteur.id);
   }
 }
