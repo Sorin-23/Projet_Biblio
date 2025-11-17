@@ -1,72 +1,46 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-
+import { AuthRequest } from '../../dto/auth-request';
 import { AuthService } from '../../service/auth-service';
+import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [ CommonModule, ReactiveFormsModule ],
   templateUrl: './login-page.html',
   styleUrl: './login-page.css',
 })
 export class LoginPage implements OnInit {
-  protected loginForm!: FormGroup;
+  protected loginError: boolean = false;
+  protected userForm!: FormGroup;
   protected usernameCtrl!: FormControl;
   protected passwordCtrl!: FormControl;
-  protected errorMessage: string | null = null;
-  protected isLoading = false;
 
-  constructor(
-    private authService: AuthService,
-    private formBuilder: FormBuilder,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private formBuilder: FormBuilder, private router: Router) { }
 
   ngOnInit(): void {
-    this.usernameCtrl = this.formBuilder.control('', [Validators.required]);
-    this.passwordCtrl = this.formBuilder.control('', [Validators.required]);
+    this.usernameCtrl = this.formBuilder.control('', Validators.required);
+    this.passwordCtrl = this.formBuilder.control('', [ Validators.required, Validators.minLength(6) ]);
 
-    this.loginForm = this.formBuilder.group({
+    this.userForm = this.formBuilder.group({
       username: this.usernameCtrl,
-      password: this.passwordCtrl,
+      password: this.passwordCtrl
     });
   }
 
-  public login(): void {
-    if (!this.loginForm.valid) {
-      this.loginForm.markAllAsTouched();
-      return;
+  public async connecter() {
+    try {
+      // La méthode auth renvoyant une Promise, on peut attendre la résolution avec "await"
+      await this.authService.auth(new AuthRequest(this.usernameCtrl.value, this.passwordCtrl.value));
+
+      // Si tout est OK, on va sur la page des matières
+      this.router.navigate([ '/livre' ]);
     }
 
-    this.isLoading = true;
-    this.errorMessage = null;
-
-    const username = this.usernameCtrl.value;
-    const password = this.passwordCtrl.value;
-
-    this.authService.login(username, password).subscribe({
-      next: (response:any) => {
-        this.isLoading = false;
-        this.router.navigate(['/home']);
-      },
-      error: (error:any) => {
-        this.isLoading = false;
-        this.errorMessage = 'Identifiants invalides. Veuillez réessayer.';
-        console.error('Login error:', error);
-      },
-    });
-  }
-
-  public getErrorMessage(controlName: string): string | null {
-    const control = this.loginForm.get(controlName);
-    if (control && control.invalid && control.touched) {
-      if (control.hasError('required')) {
-        return `${controlName === 'username' ? 'Nom d\'utilisateur' : 'Mot de passe'} requis`;
-      }
+    // Si la connexion n'a pas pu se faire, affichage de l'erreur sur le template
+    catch {
+      this.loginError = true;
     }
-    return null;
   }
 }
