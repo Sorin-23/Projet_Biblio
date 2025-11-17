@@ -12,10 +12,15 @@
   </div>
 
   <div>
+    <label>Résumé</label>
+    <textarea formControlName="resume" type = "text" ></textarea>
+  </div>
+
+  <div>
     <label>Auteur</label>
     <select [formControl]="auteurCtrl">
   <option [ngValue]="null">-- Choisir un auteur --</option>
-  <option *ngFor="let a of (auteurs$ | async)" [ngValue]="a.id"}>
+  <option *ngFor="let a of (auteurs$ | async)" [ngValue]="a.id">
     {{ a.prenom }} {{ a.nom }}
   </option>
 </select>
@@ -25,7 +30,7 @@
     <label>Éditeur</label>
     <select [formControl]="editeurCtrl">
       <option [ngValue]="null">-- Choisir un éditeur --</option>
-      <option *ngFor="let e of (editeurs$ | async)" [ngValue]="e">
+      <option *ngFor="let e of (editeurs$ | async)" [ngValue]="e.id">
         {{ e.nom }}
       </option>
     </select>
@@ -35,7 +40,7 @@
     <label>Collection</label>
     <select [formControl]="collectionCtrl">
       <option [ngValue]="null">-- Choisir une collection --</option>
-      <option *ngFor="let c of (collections$ | async)" [ngValue]="c">
+      <option *ngFor="let c of (collections$ | async)" [ngValue]="c.id">
         {{ c.nom }}
       </option>
     </select>
@@ -57,7 +62,9 @@
       <th>Auteur</th>
       <th>Éditeur</th>
       <th>Collection</th>
+      <th>Résumé</th>
       <th>Actions</th>
+
     </tr>
   </thead>
   <tbody>
@@ -68,6 +75,7 @@
       <td>{{ l.auteur?.prenom }} {{ l.auteur?.nom }}</td>
       <td>{{ l.editeur?.nom }}</td>
       <td>{{ l.collection?.nom }}</td>
+      <td>{{ l.resume }}</td>
       <td>
         <button (click)="editer(l)">Modifier</button>
         <button (click)="supprimer(l)">Supprimer</button>

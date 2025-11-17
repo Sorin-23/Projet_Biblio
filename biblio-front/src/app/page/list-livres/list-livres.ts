@@ -11,6 +11,7 @@ import { LivreService } from '../../service/livre-service';
 import { AuteurService} from '../../service/auteur-service';
 import { CollectionService } from '../../service/collection-service';
 import { EditeurService } from '../../service/editeur-service';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-list-livres',
@@ -79,7 +80,7 @@ export class ListLivres implements OnInit{
   public creerOuModifier(): void {
     if (this.editingLivre) {
       this.livreService.save(new LivreDto(this.editingLivre.id,this.titreCtrl.value,
-        this.resumeCtrl.value, this.anneeCtrl.value, this.auteurs$.find(a => a.id === this.auteurCtrl.value), this.editeurCtrl.value, this.collectionCtrl.value
+        this.resumeCtrl.value, this.anneeCtrl.value, this.auteurCtrl.value, this.editeurCtrl.value, this.collectionCtrl.value
       ));
     }
     else{
@@ -104,9 +105,9 @@ export class ListLivres implements OnInit{
     this.titreCtrl.setValue(livre.titre);
     this.anneeCtrl.setValue(livre.annee);
     this.resumeCtrl.setValue(livre.resume);
-    this.auteurCtrl.setValue(livre.auteur.id);
-    this.collectionCtrl.setValue(livre.collection.id);
-    this.editeurCtrl.setValue(livre.editeur.id);
+    this.auteurCtrl.setValue(livre.auteur?.id || null);
+  this.editeurCtrl.setValue(livre.editeur?.id || null);
+  this.collectionCtrl.setValue(livre.collection?.id || null);
     console.log("idAuteur", this.auteurCtrl.value);
 
   }

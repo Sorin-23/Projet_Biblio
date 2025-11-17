@@ -34,11 +34,12 @@ export class LivreService {
     titre: livreDto.titre,
     resume: livreDto.resume,
     annee: livreDto.annee,
-    auteurId: livreDto.auteur.id,   
-    editeurId: livreDto.editeur.id,
-    collectionId: livreDto.collection.id
+    auteurId: livreDto.auteur,   
+    editeurId: livreDto.editeur,
+    collectionId: livreDto.collection
   }
   console.log('payload envoyé:', payload);
+  console.log('auteur envoyé:', livreDto.auteur);
   ;
 
     if (!livreDto.id) {
