@@ -5,32 +5,27 @@ import { Observable } from 'rxjs';
 
 import { AuteurDto } from '../../../dto/auteur-dto';
 import { AuteurService } from '../../../service/auteur-service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-auteur-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule],
   templateUrl: './auteur-page.html',
   styleUrl: './auteur-page.css'
 })
 export class AuteurPage implements OnInit {
-
   protected auteurs$!: Observable<AuteurDto[]>;
   protected auteurForm!: FormGroup;
-
   protected nomCtrl!: FormControl;
   protected prenomCtrl!: FormControl;
   protected nationaliteCtrl!: FormControl;
 
   protected editingAuteur!: AuteurDto | null;
 
-  constructor(
-    private auteurService: AuteurService,
-    private formBuilder: FormBuilder
-  ) {}
+  constructor(private auteurService: AuteurService, private formBuilder: FormBuilder) { }
 
   ngOnInit(): void {
-    // même pattern que MatierePage
     this.auteurs$ = this.auteurService.findAll();
 
     this.nomCtrl = this.formBuilder.control('', Validators.required);
@@ -40,54 +35,38 @@ export class AuteurPage implements OnInit {
     this.auteurForm = this.formBuilder.group({
       nom: this.nomCtrl,
       prenom: this.prenomCtrl,
-      nationalite: this.nationaliteCtrl
+      nationalite : this.nationaliteCtrl
     });
-
-    this.editingAuteur = null;
   }
 
   public trackAuteur(index: number, value: AuteurDto) {
     return value.id;
   }
 
-  public creerOuModifierAuteur(): void {
-    if (!this.auteurForm.valid) {
-      this.auteurForm.markAllAsTouched();
-      return;
+  public creerOuModifier() {
+    if (this.editingAuteur) {
+      this.auteurService.save(new AuteurDto(this.editingAuteur.id, this.nomCtrl.value,  this.prenomCtrl.value,  this.nationaliteCtrl.value));
     }
 
-    const nom = this.nomCtrl.value;
-    const prenom = this.prenomCtrl.value;
-    const nationalite = this.nationaliteCtrl.value;
-
-    if (this.editingAuteur) {
-      // UPDATE
-      this.auteurService.save(
-        new AuteurDto(this.editingAuteur.id, nom, prenom, nationalite)
-      );
-    } else {
-      // CREATE (id = 0 -> !id => POST dans le service, comme pour Matiere)
-      this.auteurService.save(
-        new AuteurDto(0, nom, prenom, nationalite)
-      );
+    else {
+      this.auteurService.save(new AuteurDto(0, this.nomCtrl.value,   this.prenomCtrl.value,  this.nationaliteCtrl.value));
+      console.log("ajouté ligne bdd");
     }
 
     this.editingAuteur = null;
-    this.nomCtrl.setValue('');
-    this.prenomCtrl.setValue('');
-    this.nationaliteCtrl.setValue('');
+    this.nomCtrl.setValue("");
+    this.prenomCtrl.setValue("");
+    this.nationaliteCtrl.setValue("");
   }
 
-  public editAuteur(auteur: AuteurDto): void {
+  public editer(auteur: AuteurDto) {
     this.editingAuteur = auteur;
-
     this.nomCtrl.setValue(auteur.nom);
     this.prenomCtrl.setValue(auteur.prenom);
     this.nationaliteCtrl.setValue(auteur.nationalite);
   }
 
-  public supprimerAuteur(auteur: AuteurDto): void {
+  public supprimer(auteur: AuteurDto) {
     this.auteurService.deleteById(auteur.id);
   }
 }
-
