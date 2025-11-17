@@ -69,3 +69,30 @@ button:last-child {
 button:last-child:hover {
     background: #c0392b;
 }
+
+
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #333;
+    background: white;
+    transition: 0.2s;
+}
+
+.card:hover {
+    background: #eef5ff;
+    border-color: #b6d0ff;
+}
+
+.card h2 {
+    margin: 0 0 10px;
+    color: #2c3e50;
+}
