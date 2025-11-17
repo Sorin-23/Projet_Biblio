@@ -11,6 +11,30 @@ public class LivreRequest {
 	
 	private int annee;
 
+	public Integer getEditeurId() {
+		return editeurId;
+	}
+
+	public void setEditeurId(Integer editeurId) {
+		this.editeurId = editeurId;
+	}
+
+	public Integer getCollectionId() {
+		return collectionId;
+	}
+
+	public void setCollectionId(Integer collectionId) {
+		this.collectionId = collectionId;
+	}
+
+	private Integer auteurId;
+
+	private Integer editeurId;
+
+	private Integer collectionId;
+
+	
+
 	public String getTitre() {
 		return titre;
 	}
@@ -33,6 +57,14 @@ public class LivreRequest {
 
 	public void setAnnee(int annee) {
 		this.annee = annee;
+	}
+
+	public Integer getAuteurId() {
+		return auteurId;
+	}
+
+	public void setAuteurId(Integer auteurId) {
+		this.auteurId = auteurId;
 	}
 	
 	

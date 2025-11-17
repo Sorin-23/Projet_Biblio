@@ -1,18 +1,77 @@
-<p>list-livres works!</p>
+<h2>Gestion des livres</h2>
 
-<table>
-    <thead>
-        <tr>
-            <th>Titre</th>
-            <th></th>
-        </tr>
-    </thead>
+<form [formGroup]="livreForm" (ngSubmit)="creerOuModifier()">
+  <div>
+    <label>Titre</label>
+    <input formControlName="titre" />
+  </div>
 
-    <tbody>
-        <tr *ngFor="let livre of livres$ | async; trackBy: trackLivre">
-            <td>
-                <a [routerLink]="[ '/livre', livre.id ]">{{ livre.titre }}</a>
-            </td>
-        </tr>
-    </tbody>
+  <div>
+    <label>Année</label>
+    <input type="number" formControlName="annee" />
+  </div>
+
+  <div>
+    <label>Auteur</label>
+    <select [formControl]="auteurCtrl">
+  <option [ngValue]="null">-- Choisir un auteur --</option>
+  <option *ngFor="let a of (auteurs$ | async)" [ngValue]="a.id"}>
+    {{ a.prenom }} {{ a.nom }}
+  </option>
+</select>
+  </div>
+
+  <div>
+    <label>Éditeur</label>
+    <select [formControl]="editeurCtrl">
+      <option [ngValue]="null">-- Choisir un éditeur --</option>
+      <option *ngFor="let e of (editeurs$ | async)" [ngValue]="e">
+        {{ e.nom }}
+      </option>
+    </select>
+  </div>
+
+  <div>
+    <label>Collection</label>
+    <select [formControl]="collectionCtrl">
+      <option [ngValue]="null">-- Choisir une collection --</option>
+      <option *ngFor="let c of (collections$ | async)" [ngValue]="c">
+        {{ c.nom }}
+      </option>
+    </select>
+  </div>
+
+  <button type="submit">
+    {{ editingLivre ? 'Mettre à jour' : 'Créer' }}
+  </button>
+</form>
+
+<hr />
+
+<table border =1 >
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Titre</th>
+      <th>Année</th>
+      <th>Auteur</th>
+      <th>Éditeur</th>
+      <th>Collection</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let l of (livres$ | async); trackBy: trackLivre">
+      <td>{{ l.id }}</td>
+      <td>{{ l.titre }}</td>
+      <td>{{ l.annee }}</td>
+      <td>{{ l.auteur?.prenom }} {{ l.auteur?.nom }}</td>
+      <td>{{ l.editeur?.nom }}</td>
+      <td>{{ l.collection?.nom }}</td>
+      <td>
+        <button (click)="editer(l)">Modifier</button>
+        <button (click)="supprimer(l)">Supprimer</button>
+      </td>
+    </tr>
+  </tbody>
 </table>

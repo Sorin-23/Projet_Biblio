@@ -30,7 +30,16 @@ export class LivreService {
   }
 
   public save(livreDto: LivreDto): void {
-    const payload = livreDto.toJson();
+    const payload = {
+    titre: livreDto.titre,
+    resume: livreDto.resume,
+    annee: livreDto.annee,
+    auteurId: livreDto.auteur.id,   
+    editeurId: livreDto.editeur.id,
+    collectionId: livreDto.collection.id
+  }
+  console.log('payload envoyé:', payload);
+  ;
 
     if (!livreDto.id) {
       this.http.post<LivreDto>(this.apiUrl, payload).subscribe(() => this.refresh());

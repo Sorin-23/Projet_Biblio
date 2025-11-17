@@ -1,5 +1,7 @@
 package biblio.dto.request;
 
+import java.util.List;
+
 import jakarta.validation.constraints.NotBlank;
 
 public class AuteurRequest {
@@ -9,8 +11,20 @@ public class AuteurRequest {
 	
 	@NotBlank
 	private String prenom;
+
+	/*private List<LivreRequest> livres;
 	
+	public List<LivreRequest> getLivres() {
+		return livres;
+	}
+
+	public void setLivres(List<LivreRequest> livres) {
+		this.livres = livres;
+	}*/
+
 	private String nationalite;
+
+	
 
 	public String getNom() {
 		return nom;

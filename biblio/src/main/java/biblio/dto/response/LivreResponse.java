@@ -19,6 +19,15 @@ public class LivreResponse {
     @JsonView(Views.Common.class)
     private int annee;
 
+	@JsonView(Views.Livre.class)
+	private AuteurResponse auteur;
+
+	@JsonView(Views.Livre.class)
+	private EditeurResponse editeur;
+
+	@JsonView(Views.Livre.class)
+	private CollectionResponse collection;
+
 	public Integer getId() {
 		return id;
 	}
@@ -50,7 +59,32 @@ public class LivreResponse {
 	public void setAnnee(int annee) {
 		this.annee = annee;
 	}
+	
     
+	public AuteurResponse getAuteur() {
+		return auteur;
+	}
+
+	public void setAuteur(AuteurResponse auteur) {
+		this.auteur = auteur;
+	}
+
+	public EditeurResponse getEditeur() {
+		return editeur;
+	}
+
+	public void setEditeur(EditeurResponse editeur) {
+		this.editeur = editeur;
+	}
+
+	public CollectionResponse getCollection() {
+		return collection;
+	}
+
+	public void setCollection(CollectionResponse collection) {
+		this.collection = collection;
+	}
+
 	public static LivreResponse convert(Livre livre) {
 		LivreResponse resp = new LivreResponse();
 		
@@ -58,6 +92,9 @@ public class LivreResponse {
 		resp.setTitre(livre.getTitre());
 		resp.setResume(livre.getResume());
 		resp.setAnnee(livre.getAnnee());
+		resp.setAuteur(AuteurResponse.convert(livre.getAuteur()));
+		resp.setCollection(CollectionResponse.convert(livre.getCollection()));
+		resp.setEditeur(EditeurResponse.convert(livre.getEditeur()));
 		
 		return resp;
 		

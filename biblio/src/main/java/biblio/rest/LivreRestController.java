@@ -21,6 +21,9 @@ import biblio.dto.response.LivreResponse;
 import biblio.exception.IdNotFoundException;
 import biblio.model.Livre;
 import biblio.service.LivreService;
+import biblio.service.AuteurService;
+import biblio.service.CollectionService;
+import biblio.service.EditeurService;
 import biblio.view.Views;
 import jakarta.validation.Valid;
 
@@ -31,6 +34,15 @@ public class LivreRestController {
 
 	@Autowired
 	private LivreService srv;
+
+	@Autowired
+	private AuteurService auteurSrv;
+
+	@Autowired
+	private EditeurService editeurSrv;
+
+	@Autowired
+	private CollectionService collectionSrv;
 	
 	@GetMapping
 	@JsonView(Views.Livre.class)
@@ -51,6 +63,9 @@ public class LivreRestController {
 	{
 		Livre livre = new Livre();
 		BeanUtils.copyProperties(request, livre);
+		livre.setAuteur(auteurSrv.getById(request.getAuteurId()).orElseThrow(IdNotFoundException::new));
+		livre.setEditeur(editeurSrv.getById(request.getEditeurId()).orElseThrow(IdNotFoundException::new));
+		livre.setCollection(collectionSrv.getById(request.getCollectionId()).orElseThrow(IdNotFoundException::new));
 		
 		this.srv.create(livre);
 		
@@ -63,7 +78,12 @@ public class LivreRestController {
 	public LivreResponse modifierLivre(@PathVariable Integer id,@Valid @RequestBody LivreRequest request)
 	{
 		Livre livre = this.srv.getById(id).orElseThrow(IdNotFoundException::new);
+		
 		BeanUtils.copyProperties(request, livre);
+		livre.setAuteur(auteurSrv.getById(request.getAuteurId()).orElseThrow(IdNotFoundException::new));
+		livre.setEditeur(editeurSrv.getById(request.getEditeurId()).orElseThrow(IdNotFoundException::new));
+		livre.setCollection(collectionSrv.getById(request.getCollectionId()).orElseThrow(IdNotFoundException::new));
+		//livre.setAuteur(auteurSrv.getById(request.getAuteurId()).orElseThrow(IdNotFoundException::new));
 		
 		this.srv.update(livre);
 		

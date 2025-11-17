@@ -79,6 +79,10 @@ export class LivrePage implements OnInit {
   }
 
   public creerOuModifier(): void {
+
+    console.log("SUBMIT OK");
+  console.log("VALID ?", this.livreForm.valid);
+  console.log(this.livreForm.value);
     if (!this.livreForm.valid) {
       this.livreForm.markAllAsTouched();
       return;
@@ -87,9 +91,9 @@ export class LivrePage implements OnInit {
     const titre = this.titreCtrl.value;
     const resume = this.resumeCtrl.value;
     const annee = this.anneeCtrl.value;
-    const auteur = this.auteurCtrl.value as AuteurDto;
-    const editeur = this.editeurCtrl.value as EditeurDto;
-    const collection = this.collectionCtrl.value as CollectionDto;
+    const auteur = this.livreForm.value.auteur;
+    const editeur = this.livreForm.value.editeur;
+    const collection = this.livreForm.value.collection;
 
     if (this.editingLivre) {
       // UPDATE

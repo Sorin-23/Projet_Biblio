@@ -1,7 +1,10 @@
 package biblio.dto.response;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonView;
 
+import biblio.dto.request.LivreRequest;
 import biblio.model.Auteur;
 import biblio.view.Views;
 
@@ -15,6 +18,16 @@ public class AuteurResponse {
 	private String prenom;
 	@JsonView(Views.Common.class)
 	private String nationalite;
+	/*@JsonView(Views.auteurWithLivres.class)
+	private List<LivreResponse> livres;
+	
+	public List<LivreResponse> getLivres() {
+		return livres;
+	}
+
+	public void setLivres(List<LivreResponse> livres) {
+		this.livres = livres;
+	}*/
 	
 	
 	public Integer getId() {
@@ -49,6 +62,7 @@ public class AuteurResponse {
 		resp.setNom(auteur.getNom());
 		resp.setPrenom(auteur.getPrenom());
 		resp.setNationalite(auteur.getNationalite());
+		//resp.setLivres(auteur.getLivres().stream().map(LivreResponse::convert).toList());
 		
 		return resp;
 		

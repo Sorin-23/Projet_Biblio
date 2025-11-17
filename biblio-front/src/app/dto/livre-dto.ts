@@ -4,8 +4,8 @@ import { AuteurDto } from "./auteur-dto";
 
 export class LivreDto {
     constructor(private _id: number, private _titre: string, private _resume:string,
-        private _annee:number, private _auteur : AuteurDto, 
-        private _editeur: EditeurDto, private _collection: CollectionDto){}
+        private _annee:number, private _auteur : any, 
+        private _editeur: any, private _collection: any){}
 
     public get id(): number {
         return this._id;
@@ -69,9 +69,9 @@ export class LivreDto {
             titre: this.titre,
             resume:this.resume,
             annee: this.annee,
-            auteur:this.auteur.toJson(),
-            editeur:this.editeur.toJson(),
-            collection:this.collection.toJson()
+            auteur:this.auteur,
+            editeur:this.editeur,
+            collection:this.collection
         };
     }
     
