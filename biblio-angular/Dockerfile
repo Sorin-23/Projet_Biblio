@@ -5,7 +5,7 @@ FROM nginx:latest
 COPY nginx-default.conf /etc/nginx/conf.d/default.conf
 
 # Copier les fichiers compilés Angular dans le dossier attendu par NGINX
-COPY ./dist/biblio-front/browser /usr/share/nginx/html
+COPY ./dist/biblio-angular/browser /usr/share/nginx/html
 
 # Exposer le port 80 pour le frontend
 EXPOSE 80
