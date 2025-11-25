@@ -2,36 +2,23 @@ pipeline {
     agent any
 
     stages {
-        stage('Build') {
+
+        stage('Build Angular') {
             agent {
                 docker {
                     image 'node:lts-bullseye'
                     args '''
-                        -v $HOME/.npm:/root/.npmm2:z
+                        -v $HOME/.npm:/root/.npm:z
                         -u root
                         --network devops
                     '''
-                    reuseNode true // Sans ça, il y aura un 2eme workspace
+                    reuseNode true
                 }
             }
-
-            stages {
-                stage('Installation dependances') {
-                    steps {
-                        dir('biblio-front') {
-                            sh 'npm install'
-                        }
-                    }
-                }
-
-                
-
-                stage('Build Angular') {
-                    steps {
-                        dir('biblio-angular') {
-                            sh './node_modules/.bin/ng build'
-                        }
-                    }
+            steps {
+                dir('biblio-angular') {
+                    
+                    sh 'npm install'
                 }
             }
         }
@@ -39,6 +26,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 dir('biblio-angular') {
+                   
                     sh 'docker build -t ajc/biblio:angular .'
                 }
             }
