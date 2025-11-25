@@ -103,6 +103,5 @@ public class LivreRestController {
 	{
 		log.info("DELETE /api/livre/{} - supprimerLivre() called", id);
 		this.srv.deleteById(id);
-		this.srv.deleteById(id);
 	}
 }

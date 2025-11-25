@@ -11,6 +11,7 @@
 	<groupId>formation-sopra</groupId>
 	<artifactId>biblio</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 
 
 
