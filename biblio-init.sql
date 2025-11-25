@@ -7,6 +7,7 @@
 -- Version du serveur : 8.0.40
 -- Version de PHP : 8.3.14
 
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
@@ -20,6 +21,8 @@ SET time_zone = "+00:00";
 --
 -- Base de données : `bibliotheque`
 --
+CREATE DATABASE IF NOT EXISTS projet_biblio;
+USE projet_biblio;
 
 -- --------------------------------------------------------
 
