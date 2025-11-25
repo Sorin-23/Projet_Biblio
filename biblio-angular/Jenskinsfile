@@ -28,7 +28,7 @@ pipeline {
 
                 stage('Build Angular') {
                     steps {
-                        dir('biblio-front') {
+                        dir('biblio-angular') {
                             sh './node_modules/.bin/ng build'
                         }
                     }
@@ -38,8 +38,8 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                dir('biblio-front') {
-                    sh 'docker build -t ajc/biblio:front .'
+                dir('biblio-angular') {
+                    sh 'docker build -t ajc/biblio:angular .'
                 }
             }
         }
