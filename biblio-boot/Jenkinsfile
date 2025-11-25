@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Maven & Sonar') {
+            agent {
+                docker {
+                    image 'maven:3.9.11-eclipse-temurin-21'
+                    args '''
+                        -v $HOME/.m2:/root/.m2:z
+                        -u root
+                        --network biblio
+                    '''
+                    reuseNode true
+                }
+            }
+            steps {
+                dir('quest-boot') {
+
+                    sh 'mvn -version'
+                    sh 'mvn package'
+
+                    withSonarQubeEnv('SonarQube') {
+                        sh 'mvn clean verify sonar:sonar -Dsonar.projectKey=biblio-boot -Dsonar.projectName=biblio-boot'
+                    }
+                }
+            }
+        }
+
+        stage('Docker Build') {
+            steps {
+                dir('biblio-boot') {
+                    sh 'docker build -t ajc/biblio:boot .'
+                }
+            }
+        }
+
+        stage('Docker Deploy') {
+            steps {
+
+                    sh 'docker compose up -d --no-deps --build boot'
+
+            }
+        }
+
+    }
+}
