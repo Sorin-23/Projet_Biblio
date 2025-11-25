@@ -19,6 +19,7 @@ pipeline {
                 dir('biblio-angular') {
                     
                     sh 'npm install'
+                    sh 'npm run build'
                 }
             }
         }
