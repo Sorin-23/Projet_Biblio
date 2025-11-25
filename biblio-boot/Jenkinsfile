@@ -16,7 +16,7 @@ pipeline {
                 }
             }
             steps {
-                dir('quest-boot') {
+                dir('biblio-boot') {
 
                     sh 'mvn -version'
                     sh 'mvn package'
