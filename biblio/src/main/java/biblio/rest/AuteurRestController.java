@@ -2,6 +2,8 @@ package biblio.rest;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +30,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/auteur")
 @PreAuthorize("hasAnyRole('USER', 'EDITEUR', 'ADMIN', 'AUTEUR')")
 public class AuteurRestController {
+	private final static Logger log = LoggerFactory.getLogger(AuteurRestController.class);
 
 	@Autowired
 	private AuteurService srv;
@@ -35,12 +38,14 @@ public class AuteurRestController {
 	@GetMapping
 	@JsonView(Views.Auteur.class)
 	public List<AuteurResponse> allAuteurs(){
+	log.info("GET /api/auteur - allAuteurs() called");
 		return this.srv.getAll().stream().map(AuteurResponse::convert).toList();
 	}
 	
 	@GetMapping("/{id}")
 	@JsonView(Views.Auteur.class)
 	public AuteurResponse ficheAuteur(@PathVariable int id) {
+		log.info("GET /api/auteur/{} - ficheAuteur() called", id);
 	    return this.srv.getById(id).map(AuteurResponse::convert).orElseThrow(IdNotFoundException::new);
 	}
 	
@@ -49,6 +54,7 @@ public class AuteurRestController {
 	@PreAuthorize("hasAnyRole('EDITEUR', 'ADMIN')")
 	public AuteurResponse ajouterAuteur(@Valid @RequestBody AuteurRequest request)
 	{
+		log.info("POST /api/auteur - ajoutAuteur() called with request: {}", request);
 		Auteur auteur = new Auteur();
 	    BeanUtils.copyProperties(request, auteur);
 
@@ -62,6 +68,8 @@ public class AuteurRestController {
 	@PreAuthorize("hasAnyRole('EDITEUR', 'ADMIN')")
 	public AuteurResponse modifierAuteur(@PathVariable int id, @Valid @RequestBody AuteurRequest request)
 	{
+		log.info("PUT /api/auteur/{} - modifierAuteur() called with filière: {}", id, request);
+
 		Auteur auteur = this.srv.getById(id).orElseThrow(IdNotFoundException::new);
 	    BeanUtils.copyProperties(request, auteur);
 
@@ -74,6 +82,7 @@ public class AuteurRestController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public void deleteAuteur(@PathVariable Integer id)
 	{
+		log.info("DELETE /api/auteur/{} - supprimerAuteur() called", id);
 		this.srv.deleteById(id);
 	}
 }

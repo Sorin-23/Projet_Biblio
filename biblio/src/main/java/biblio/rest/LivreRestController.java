@@ -2,6 +2,8 @@ package biblio.rest;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,10 +22,10 @@ import biblio.dto.request.LivreRequest;
 import biblio.dto.response.LivreResponse;
 import biblio.exception.IdNotFoundException;
 import biblio.model.Livre;
-import biblio.service.LivreService;
 import biblio.service.AuteurService;
 import biblio.service.CollectionService;
 import biblio.service.EditeurService;
+import biblio.service.LivreService;
 import biblio.view.Views;
 import jakarta.validation.Valid;
 
@@ -31,6 +33,7 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/livre")
 @PreAuthorize("hasAnyRole('USER', 'EDITEUR', 'ADMIN', 'AUTEUR')")
 public class LivreRestController {
+	private final static Logger log = LoggerFactory.getLogger(LivreRestController.class);
 
 	@Autowired
 	private LivreService srv;
@@ -47,12 +50,14 @@ public class LivreRestController {
 	@GetMapping
 	@JsonView(Views.Livre.class)
 	public List<Livre> allLivres(){
+		log.info("GET /api/livre - allLivres() called");
 		return this.srv.getAll();
 	}
 	
 	@GetMapping("/{id}")
 	@JsonView(Views.Livre.class)
 	public LivreResponse ficheLivre(@PathVariable Integer id) {
+		log.info("GET /api/livre/{} - ficheLivre() called", id);
 		return this.srv.getById(id).map(LivreResponse::convert).orElseThrow(IdNotFoundException::new);
 	}
 	
@@ -61,6 +66,7 @@ public class LivreRestController {
 	@PreAuthorize("hasAnyRole('AUTEUR', 'EDITEUR', 'ADMIN')")
 	public LivreResponse ajouterLivre(@Valid @RequestBody LivreRequest request)
 	{
+		log.info("POST /api/livre - ajoutLivre() called with request: {}", request);
 		Livre livre = new Livre();
 		BeanUtils.copyProperties(request, livre);
 		livre.setAuteur(auteurSrv.getById(request.getAuteurId()).orElseThrow(IdNotFoundException::new));
@@ -77,6 +83,7 @@ public class LivreRestController {
 	@PreAuthorize("hasAnyRole('EDITEUR', 'ADMIN')")
 	public LivreResponse modifierLivre(@PathVariable Integer id,@Valid @RequestBody LivreRequest request)
 	{
+		log.info("PUT /api/livre/{} - modifierLivre() called with filière: {}", id, request);
 		Livre livre = this.srv.getById(id).orElseThrow(IdNotFoundException::new);
 		
 		BeanUtils.copyProperties(request, livre);
@@ -94,6 +101,8 @@ public class LivreRestController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public void deleteLivre(@PathVariable Integer id)
 	{
+		log.info("DELETE /api/livre/{} - supprimerLivre() called", id);
+		this.srv.deleteById(id);
 		this.srv.deleteById(id);
 	}
 }

@@ -2,6 +2,8 @@ package biblio.rest;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +30,8 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/editeur")
 @PreAuthorize("hasAnyRole('USER', 'EDITEUR', 'ADMIN', 'AUTEUR')")
 public class EditeurRestController {
+	private final static Logger log = LoggerFactory.getLogger(EditeurRestController.class);
+
 	
 	@Autowired
 	private EditeurService srv;
@@ -35,12 +39,14 @@ public class EditeurRestController {
 	@GetMapping
 	@JsonView(Views.Editeur.class)
 	public List<Editeur> allEditeurs(){
+		log.info("GET /api/editeur - allEditeurs() called");
 		return this.srv.getAll();
 	}
 	
 	@GetMapping("/{id}")
 	@JsonView(Views.Editeur.class)
 	public EditeurResponse ficheEditeur(@PathVariable Integer id) {
+		log.info("GET /api/editeur/{} - ficheEditeur() called", id);
 		return this.srv.getById(id).map(EditeurResponse::convert).orElseThrow(IdNotFoundException::new);
 	}
 	
@@ -49,6 +55,7 @@ public class EditeurRestController {
 	@PreAuthorize("hasAnyRole('EDITEUR', 'ADMIN')")
 	public EditeurResponse ajouterEditeur(@Valid @RequestBody EditeurRequest request)
 	{
+		log.info("POST /api/editeur - ajoutEditeur() called with request: {}", request);
 		Editeur editeur = new Editeur();
 		
 		BeanUtils.copyProperties(request,editeur);
@@ -63,6 +70,7 @@ public class EditeurRestController {
 	@PreAuthorize("hasAnyRole('EDITEUR', 'ADMIN')")
 	public EditeurResponse modifierEditeur(@PathVariable Integer id,@Valid @RequestBody EditeurRequest request)
 	{
+		log.info("PUT /api/editeur/{} - modifierEditeur() called with filière: {}", id, request);
 		Editeur editeur = this.srv.getById(id).orElseThrow(IdNotFoundException::new);
 		
 		BeanUtils.copyProperties(request,editeur);
@@ -76,6 +84,7 @@ public class EditeurRestController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public void deleteEditeur(@PathVariable Integer id)
 	{
+		log.info("DELETE /api/editeur/{} - supprimerEditeur() called", id);
 		this.srv.deleteById(id);
 	}
 	

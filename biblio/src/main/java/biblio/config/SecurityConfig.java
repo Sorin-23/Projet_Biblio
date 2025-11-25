@@ -2,6 +2,8 @@ package biblio.config;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,10 +21,12 @@ import org.springframework.web.cors.CorsConfigurationSource;
 @Configuration
 @EnableMethodSecurity(prePostEnabled = true) // Activer les annotations @PreAuthorize / @PostAuthorize
 public class SecurityConfig {
+    private final static Logger log = LoggerFactory.getLogger(SecurityConfig.class);
     // Le SecurityFilterChain va nous permettre de configurer les accès, éventuellement le CSRF, politiques CORS générales, etc.
     @Bean // On bypass la config auto-configuration
     SecurityFilterChain filterChain(HttpSecurity http, JwtHeaderFilter jwtFilter) throws Exception {
         // Configurer ici les accès généraux
+        log.error("Configuration {} du filter chain {}", "var1", "var2");
         http.authorizeHttpRequests(auth -> {
             // On autorise les ressources externes (JSP, CSS, JS, IMG)
             auth.requestMatchers("/WEB-INF/**", "/*.css", "/assets/**").permitAll();
