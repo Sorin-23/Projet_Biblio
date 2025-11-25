@@ -1,0 +1,66 @@
+name: biblio-compose
+
+# Les services, c'est tous les containers à créer / à maintenir
+services:
+  # Container "mysql", qui utilisera une image, des volumes, un réseau, des ports, etc...
+  mysql:
+    image: mysql:8.0.44
+    container_name: biblio-mysql
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+
+    networks:
+      - biblio
+
+    volumes:
+      - ./biblio-init.sql:/docker-entrypoint-initdb.d/setup.sql
+      - db_data:/var/lib/mysql
+
+    # Comment déterminer que mysql est prêt à l'emploi
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 10s
+      retries: 10
+
+  # Container "java"
+  boot:
+    # build:
+      # context: /workspace/SOPRA-250905-GIT/quest-boot
+      # context: ./quest-boot
+
+    image: ajc/biblio:boot
+    container_name: biblio-boot
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://biblio-mysql/projet_biblio
+      SPRING_DATASOURCE_PASSWORD: root
+
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+    networks:
+      - biblio
+
+
+  angular:
+    image: ajc/biblio:angular
+    container_name: biblio-angular
+
+    ports:
+      - 80:80
+
+    depends_on:
+      - boot
+
+    networks:
+      - biblio
+
+volumes:
+  db_data:
+    name: biblio-db-data
+
+networks:
+  biblio:
+    name: biblio
